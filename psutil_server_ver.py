@@ -30,7 +30,7 @@ try:
     iperf_upload = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5202",
                                     creationflags=subprocess.CREATE_NEW_CONSOLE)
 
-    print("-----------5201 is your upload-----------\n\n")
+    print("-----------5201 is your download-----------\n\n")
 
     print("-----------5202 is your upload-----------\n\n")
 
