@@ -27,13 +27,13 @@ print(f"\n\n---------------------{ipadd}---------------------\n\n")
 
 while True:
     try:
-        usr_input = input("Enter the Iperf Server IP:")
+        usr_input = input("Enter the Iperf Server IP: ")
 
         ipaddress.ip_address(usr_input)
 
         try:
 
-            test_duration = int(input("How long would you like to test for?\nIn Minutes, Enter Here"))
+            test_duration = int(input("How long would you like to test for?\nIn Minutes, Enter Here: "))
 
         except Exception:
 
