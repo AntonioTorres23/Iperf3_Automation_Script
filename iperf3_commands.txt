@@ -1,0 +1,3 @@
+.\iperf3.exe -c 10.64.3.69 -t 3600 -p 5202 -B 10.64.2.179 -u -b 900M
+
+.\iperf3.exe -s -B {ipadd} -p 5201
