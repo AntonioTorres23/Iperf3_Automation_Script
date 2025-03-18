@@ -51,7 +51,7 @@ try:
     iperf_download = subprocess.Popen(f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5201 -B {ipadd} -V -R -u -b 900M",
                                       creationflags=subprocess.CREATE_NEW_CONSOLE)
 
-    iperf_upload = subprocess.Popen(f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5202 -B {ipadd} -V -u -b 35M",
+    iperf_upload = subprocess.Popen(f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5202 -B {ipadd} -V -u -b 900M",
                                     creationflags=subprocess.CREATE_NEW_CONSOLE)
 
     print("-----------5201 is your download-----------\n\n")
