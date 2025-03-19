@@ -21,6 +21,8 @@ def obtain_ip():
             return ip.address
 
 
+valid_throughput_sizes = ["K", "M", "G"]
+
 ipadd = obtain_ip()
 
 print(f"\n\n---------------------{ipadd}---------------------\n\n")
@@ -35,9 +37,31 @@ while True:
 
             test_duration = int(input("How long would you like to test for?\nIn Minutes, Enter Here: "))
 
+
         except Exception:
 
             print("Unknown Integer or variable type.\nPlease try again.")
+
+        try:
+            while True:
+
+                bitrate_down = input("How much traffic would you like to push for the Downstream Channel?\nMUST USE "
+                                     "UPPERCASE LETTERING\nEnter Here:")
+
+                bitrate_up = input("How much traffic would you like to push for the Upstream Channel?\nMUST USE "
+                                   "UPPERCASE LETTERING\nEnter Here:")
+
+                if bitrate_down[:-1:].isdigit() and bitrate_up[:-1:].isdigit() and bitrate_down[
+                    -1] in valid_throughput_sizes and bitrate_up[-1] in valid_throughput_sizes:
+                    print(bitrate_down[-1])
+                    break
+
+                else:
+                    print(bitrate_down)
+                    print("Invalid Formatting")
+
+        except Exception:
+            print("1")
 
         break
 
@@ -48,11 +72,13 @@ while True:
 
 try:
 
-    iperf_download = subprocess.Popen(f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5201 -B {ipadd} -V -R -u -b 900M",
-                                      creationflags=subprocess.CREATE_NEW_CONSOLE)
+    iperf_download = subprocess.Popen(
+        f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5201 -B {ipadd} -V -R -u -b {bitrate_down}",
+        creationflags=subprocess.CREATE_NEW_CONSOLE)
 
-    iperf_upload = subprocess.Popen(f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5202 -B {ipadd} -V -u -b 35M",
-                                    creationflags=subprocess.CREATE_NEW_CONSOLE)
+    iperf_upload = subprocess.Popen(
+        f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5202 -B {ipadd} -V -u -b {bitrate_up}",
+        creationflags=subprocess.CREATE_NEW_CONSOLE)
 
     print("-----------5201 is your download-----------\n\n")
 
