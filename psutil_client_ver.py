@@ -70,32 +70,24 @@ while True:
 
         print("Error, Please Check IP Before Entering")
 
-try:
+iperf_download = subprocess.Popen(
+    f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5201 -B {ipadd} -V -R -u -b {bitrate_down}",
+    creationflags=subprocess.CREATE_NEW_CONSOLE)
 
-    iperf_download = subprocess.Popen(
-        f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5201 -B {ipadd} -V -R -u -b {bitrate_down}",
-        creationflags=subprocess.CREATE_NEW_CONSOLE)
+iperf_upload = subprocess.Popen(
+    f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5202 -B {ipadd} -V -u -b {bitrate_up}",
+    creationflags=subprocess.CREATE_NEW_CONSOLE)
 
-    iperf_upload = subprocess.Popen(
-        f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5202 -B {ipadd} -V -u -b {bitrate_up}",
-        creationflags=subprocess.CREATE_NEW_CONSOLE)
+print("-----------5201 is your download-----------\n\n")
 
-    print("-----------5201 is your download-----------\n\n")
+print("-----------5202 is your upload-----------\n\n")
 
-    print("-----------5202 is your upload-----------\n\n")
+print('Done, Please View Terminals For Results\n')
 
-    print('Done, Please View Terminals For Results\n')
+input("Press any Key to Exit and Kill Iperf3 Server")
 
-    while True:
-        input("Press any Key to Exit and Kill Iperf3 Server")
+iperf_download.kill()
 
-        iperf_download.kill()
-
-        iperf_upload.kill()
-
-        break
+iperf_upload.kill()
 
 
-except Exception:
-
-    print("Error with starting server.\nPlease try again")
