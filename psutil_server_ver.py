@@ -22,28 +22,19 @@ ipadd = obtain_ip()
 
 print(f"\n\n---------------------{ipadd}---------------------\n\n")
 
-try:
+iperf_download = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5201",
+                                  creationflags=subprocess.CREATE_NEW_CONSOLE)
 
-    iperf_download = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5201",
-                                      creationflags=subprocess.CREATE_NEW_CONSOLE)
+iperf_upload = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5202",
+                                creationflags=subprocess.CREATE_NEW_CONSOLE)
 
-    iperf_upload = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5202",
-                                    creationflags=subprocess.CREATE_NEW_CONSOLE)
+print("-----------5201 is your download-----------\n\n")
 
-    print("-----------5201 is your download-----------\n\n")
+print("-----------5202 is your upload-----------\n\n")
 
-    print("-----------5202 is your upload-----------\n\n")
+input("Press any Key to Exit and Kill Iperf3 Server")
 
-    while True:
+iperf_download.kill()
 
-        input("Press any Key to Exit and Kill Iperf3 Server")
+iperf_upload.kill()
 
-        iperf_download.kill()
-
-        iperf_upload.kill()
-
-        break
-
-except Exception:
-
-    print("Error with starting server.\nPlease try again")
