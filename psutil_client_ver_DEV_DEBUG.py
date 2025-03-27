@@ -12,7 +12,7 @@ def obtain_ip():
 
     for interface_keys in addresses.keys():
 
-        if re.findall(r'W[a-zA-Z][0-9]*', interface_keys) or re.findall(r'N[a-zA-Z][0-9]*', interface_keys):
+        if re.findall(r'C[a-zA-Z][0-9]*', interface_keys) or re.findall(r'N[a-zA-Z][0-9]*', interface_keys):
             nic = addresses[interface_keys]
 
             ip = nic[1]
