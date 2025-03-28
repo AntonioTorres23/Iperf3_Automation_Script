@@ -25,10 +25,10 @@ print(f"\n\n---------------------{ipadd}---------------------\n\n")
 
 log_file_name_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-iperf_download = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5201 --logfile server_5201_download_{log_file_name_time}",
+iperf_download = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5201",
                                   creationflags=subprocess.CREATE_NEW_CONSOLE)
 
-iperf_upload = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5202 --logfile server_5202_upload_{log_file_name_time}",
+iperf_upload = subprocess.Popen(args=f".\\iperf3.exe -s -B {ipadd} -V -p 5202",
                                 creationflags=subprocess.CREATE_NEW_CONSOLE)
 
 print("-----------5201 is your download-----------\n\n")
