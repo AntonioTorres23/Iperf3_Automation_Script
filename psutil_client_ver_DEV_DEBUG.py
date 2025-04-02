@@ -22,6 +22,33 @@ def obtain_ip():
             return ip.address
 
 
+def run_time(run_time_var):
+    if run_time_var[-1] in valid_times:
+
+        if valid_times[0] in run_time_var:
+
+            new_runtime = int(run_time_var[:-1])
+
+            return int(new_runtime)
+
+        elif valid_times[1] in run_time_var:
+
+            new_runtime = int(run_time_var[:-1])
+
+            return int(new_runtime * 60)
+
+        elif valid_times[2] in run_time_var:
+
+            new_runtime = int(run_time_var[:-1])
+
+            return int(new_runtime * 3600)
+    else:
+
+        print("NOT FOUND")
+
+
+valid_times = ["S", "M", "H"]
+
 valid_throughput_sizes = ["K", "M", "G"]
 
 ipadd = obtain_ip()
@@ -34,16 +61,29 @@ while True:
 
         ipaddress.ip_address(usr_input)
 
+        while True:
+
+            try:
+                test_duration = input("How long would you like to test for?\nIn this formatting (i.e 1S, 10M, or 2H), "
+                                      "Enter Here: ")
+
+                test_dur_for_iperf3_cli = run_time(test_duration)
+
+                if test_dur_for_iperf3_cli.is_integer():
+                    print(f"Your Time In Seconds: {test_dur_for_iperf3_cli}")
+                    break
+
+                else:
+
+                    print("UNKNOWN DATA TYPE PLEASE TRY AGAIN")
+
+
+
+            except Exception:
+                print("UNKNOWN TYPE PLEASE TRY AGAIN")
+
         try:
 
-            test_duration = int(input("How long would you like to test for?\nIn Minutes, Enter Here: "))
-
-
-        except Exception:
-
-            print("Unknown Integer or variable type.\nPlease try again.")
-
-        try:
             while True:
 
                 bitrate_down = input("How much traffic would you like to push for the Downstream Channel?\nMUST USE "
@@ -74,11 +114,13 @@ while True:
 log_file_name_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 iperf_download = subprocess.Popen(
-    f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5201 -B {ipadd} -V -R -u -b {bitrate_down} --logfile client_5201_download_{log_file_name_time}",
+    f".\\iperf3.exe -c {usr_input} -t {test_dur_for_iperf3_cli} -p 5201 -B {ipadd} -V -R -u -b {bitrate_down} --logfile "
+    f"client_5201_download_{log_file_name_time}",
     creationflags=subprocess.CREATE_NEW_CONSOLE)
 
 iperf_upload = subprocess.Popen(
-    f".\\iperf3.exe -c {usr_input} -t {test_duration * 60} -p 5202 -B {ipadd} -V -u -b {bitrate_up} --logfile client_5202_upload_{log_file_name_time}",
+    f".\\iperf3.exe -c {usr_input} -t {test_dur_for_iperf3_cli} -p 5202 -B {ipadd} -V -u -b {bitrate_up} --logfile "
+    f"client_5202_upload_{log_file_name_time}",
     creationflags=subprocess.CREATE_NEW_CONSOLE)
 
 print("-----------5201 is your download-----------\n\n")
