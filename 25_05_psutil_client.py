@@ -1,4 +1,3 @@
-import time
 import psutil
 import subprocess
 import re
@@ -14,7 +13,7 @@ def obtain_ip():
 
     for interface_keys in addresses.keys():
 
-        if re.findall(r'C[a-zA-Z][0-9]*', interface_keys) or re.findall(r'N[a-zA-Z][0-9]*', interface_keys):
+        if re.findall(r'W[a-zA-Z][0-9]*', interface_keys) or re.findall(r'N[a-zA-Z][0-9]*', interface_keys):
             nic = addresses[interface_keys]
 
             ip = nic[1]
@@ -59,8 +58,16 @@ def read_log_func(file_name):
                     end_t = float(mat.group(3))
                     if end_t > last_t:
                         last_t = end_t
-    print(last_t)
-    return last_t
+    print(f'Run Time Before Failue: {last_t}')
+    return float(last_t)
+
+def read_log_test_complete(file_name):
+    with open(file_name, 'r') as file:
+        for line in reversed(file.readlines()):
+            if re.search(r'-{10,}', line):
+                return False
+            elif re.search("Test Complete. Summary results:", line):
+                return False
 
 valid_times = ["S", "M", "H"]
 
@@ -150,37 +157,46 @@ test_dur_down = test_dur_for_iperf3_cli
 
 test_dur_up = test_dur_for_iperf3_cli
 
+rem_test_dur_down = test_dur_down
+
+rem_test_dur_up = test_dur_up
+
 while True:
     if keyboard.is_pressed('esc'):
         iperf_download.kill()
         iperf_upload.kill()
         break
 
-    if psutil.pid_exists(iperf_download_process):
-        pass
-    else:
+    if not psutil.pid_exists(iperf_download_process):
+
+        read_log_test_complete(log_file_name_down)
         fail_time_down = read_log_func(log_file_name_down)
-        test_dur_down = round(test_dur_down - fail_time_down)
-        print(test_dur_down)
+        rem_test_dur_down = round(rem_test_dur_down - fail_time_down)
+        if rem_test_dur_down <= 0 or rem_test_dur_down <= 0.0:
+            break
+        print(rem_test_dur_down)
         iperf_download = subprocess.Popen(
-            f".\\iperf3.exe -c {usr_input} -t {test_dur_down} -p 5201 -B {ipadd} -V -R -u -b {bitrate_down} --logfile "
+            f".\\iperf3.exe -c {usr_input} -t {rem_test_dur_down} -p 5201 -B {ipadd} -V -R -u -b {bitrate_down} --logfile "
             f"client_5201_download_{log_file_name_time}.txt",
             creationflags=subprocess.CREATE_NEW_CONSOLE)
         iperf_download_process = iperf_download.pid
 
-        print(iperf_download_process)
+        print(f'New Download PID: {iperf_download_process}')
 
-    if psutil.pid_exists(iperf_upload_process):
-        pass
-    else:
+    if not psutil.pid_exists(iperf_upload_process):
+
+        read_log_test_complete(log_file_name_up)
         fail_time_up = read_log_func(log_file_name_up)
-        test_dur_up = round(test_dur_up - fail_time_up)
-        print(f"Time Up: {test_dur_up}")
+        rem_test_dur_up = round(rem_test_dur_up - fail_time_up)
+        if rem_test_dur_up <= 0 or rem_test_dur_up <= 0.0:
+            break
+        print(test_dur_up)
+        print(f"Time Up: {rem_test_dur_up}")
         iperf_upload = subprocess.Popen(
-            f".\\iperf3.exe -c {usr_input} -t {test_dur_up} -p 5202 -B {ipadd} -V -u -b {bitrate_up} --logfile "
+            f".\\iperf3.exe -c {usr_input} -t {rem_test_dur_up} -p 5202 -B {ipadd} -V -u -b {bitrate_up} --logfile "
             f"client_5202_upload_{log_file_name_time}.txt",
             creationflags=subprocess.CREATE_NEW_CONSOLE)
 
         iperf_upload_process = iperf_upload.pid
 
-        print(iperf_upload_process)
+        print(f'New Upload PID: {iperf_upload_process}')
